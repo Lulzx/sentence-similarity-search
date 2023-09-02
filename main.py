@@ -40,18 +40,11 @@ class SimilaritySearch:
 
     def index_embeddings(self, index):
         embeddings = []
-        count = 0
         for entry in tqdm(self.data, desc="Indexing", unit="data"):
-            try:
-                text = entry['prompt']
-                embedding = self.model.encode(text, convert_to_tensor=False).tolist()
-                embeddings.append(embedding)
-                count += 1
-            except Exception as e:
-                print(e)
-                print(entry)
-                print(count)
-                continue
+            text = entry['prompt']
+            embedding = self.model.encode(text, convert_to_tensor=False).tolist()
+            embeddings.append(embedding)
+
         embeddings = np.array(embeddings)
         index.init_index(max_elements=self.num_elements, ef_construction=MAX_EF_CONSTRUCTION, M=M_VALUE)
         index.add_items(embeddings)
